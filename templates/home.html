@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Where the trains at?!?</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+  body {
+      background-color: #f6f6f6;
+      color: #bdbdbd;
+  }
+
+
+  .container {
+      padding: 30px 30px;
+      text-align: center
+  }
+
+  .jumbotron { 
+      background-color: #f4800b; /* Orange */
+      color: #ffffff;
+      padding: 10px 25px;
+  }
+
+  .bg-grey {
+      background-color: #f6f6f6;
+  }
+
+  .panel-heading {
+      color: #fff !important;
+      background-color: #f7a655 !important;
+  }
+
+  h3 {
+    color: #000000;
+  }
+
+  ::-webkit-input-placeholder {
+     text-align: center;
+  }
+
+  :-moz-placeholder { /* Firefox 18- */
+     text-align: center;  
+  }
+
+  ::-moz-placeholder {  /* Firefox 19+ */
+     text-align: center;  
+  }
+
+  :-ms-input-placeholder {  
+     text-align: center; 
+  }
+
+  .alert-info {
+      background-color: #f4800b; /* Orange */
+      color: #ffffff;
+      text-align: center
+  }
+
+  th {
+    text-align:center
+}
+
+  </style>
+</head>
+
+
+<body>
+
+  <div class="jumbotron text-center">
+    <h1>Where the trains at?!</h1>
+    <p>Only for direct trains currently</p>
+  </div>
+
+  <div class="alert alert-info alert-dismissible fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    {% if err %}
+    <strong>{{err}}</strong>
+    {% elif return_data %}
+    <strong>To search for other stations, enter data in textboxes. Otherwise selected stations will be searched</strong>
+    {% else %}
+    <strong>May take around 5 seconds for shortcut requests</strong>.
+    {% endif %}
+  </div>
+
+    <div class="container bg-grey">
+      <div class="panel-group ">
+        <div class="panel panel-primary">
+          <div class="panel-heading"><h4>Search</h4></div>
+          <div class="panel-body">
+            <form method="post">
+            <label>Depart from:</label><br />
+            <input type="text" class="form-control" name="Departure Station"
+              {% if return_data is not defined %}
+                value="Strathfield"
+              {% else %}
+                placeholder="Enter departure station"
+              {% endif %}
+            size="36"><br>
+
+            {% if return_data %}
+            {% for item in return_data["depart_station"] %}
+              <input type="radio" name="depart_radio" value="{{item}}" {% if loop.index == 1%} checked="checked" {% endif %}> {{item[0]}}<br>
+            {% endfor %}
+            {% endif %}
+            <br>
+            <label>Arrive at:</label> <br />
+            <input type="text" class="form-control" name="Arrival Station"
+              {% if return_data is not defined %}
+                value="Central"
+              {% else %}
+                placeholder="Enter arrival station"
+              {% endif %}
+            size="36"><br>
+
+            {% if return_data %}
+
+            {% for item in return_data["arrive_station"] %}
+              <input type="radio" name="arrive_radio" value="{{item}}" {% if loop.index == 1%} checked="checked" {% endif %}> {{item[0]}}<br>
+            {% endfor %}
+
+            {% endif %}
+
+            <br>
+            <label>Time:</label><br>
+            <input required type="radio" name="DepOrArr" value="dep" {% if return_data and return_data["depOrArr"] == "dep" %} checked="checked" {% endif %} > Depart at<br>
+            <input type="radio" name="DepOrArr" value="arr" {% if return_data and return_data["depOrArr"] == "arr" %} checked="checked" {% endif %}> Arrive by<br>
+            <input id="time" type="time" name="Input Time" 
+              {% if return_data %}
+                value="{{return_data["time"]}}"
+              {% endif %} 
+              required>
+              <br><br>
+            <input type="Submit" value="Search">
+          </form>
+          </div>
+        </div>
+        <br>
+
+        {% if return_data %}
+        <div class="panel-group">
+          <div class="panel panel-primary">
+            <div class="panel-heading"><h4>Results</h4></div>
+            <div class="panel-body">
+             <table class = "table table-hover">
+            <thead>
+                  <th>Time</th>
+                  <th>Departure Station and Platform</th>
+                  <th>Arrival Station and Platform</th>
+                  <th>Train Line</th>
+              </thead>
+              <tr>
+                {% for item in return_data["train_list"] %}
+                <tr>
+                  <td>{{item.times["Departure"].strftime("%H:%M")}} - {{item.times["Arrival"].strftime("%H:%M")}}</td>
+                  <td>{{return_data["depart_station"][0][0]}} at Platform {{item.departure_details[1]}}</td>
+                  <td>{{return_data["arrive_station"][0][0]}} at Platform {{item.arrival_details[1]}}</td>
+                  <td>{{item.line}}</td>
+                {% endfor %}
+             </table>
+            </div>
+          </div>
+        </div>
+        {% else %}
+          <script>
+              var today = new Date();
+              var time = today.getHours() + ":" + today.getMinutes();
+              document.getElementById("time").value = time;
+            </script>
+        {% endif %}
+
+
+
+    </div>
+
+</body>
+
+
+</html>
