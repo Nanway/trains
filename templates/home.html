@@ -170,6 +170,9 @@
           <script>
               var today = new Date();
               var time = today.getHours() + ":" + today.getMinutes();
+              if (time.length < 5) {
+                time = "0" + time;
+              }
               document.getElementById("time").value = time;
             </script>
         {% endif %}

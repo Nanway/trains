@@ -71,7 +71,6 @@ class TrainSystem():
         start = time.clock()
         reqs = shortcut_reqs + [train_request]
         r = Trip_requester().make_request1(reqs)
-        print(time.clock() - start)
 
         # Interpret the requests (normal trains)
         normal_trains = self._interpret_trip_request(
@@ -92,6 +91,9 @@ class TrainSystem():
         if (train_request.depOrArrive == "dep"):
             results.sort(key=lambda x: x.times["Departure"])
             results.sort(key=lambda x: x.times["Arrival"])
+            print("these trains")
+            for train in results:
+                print(train.times["Departure"])
         # If we want to arrive before then sort by arrive time desc
         else:
             results.sort(key=lambda x: x.times["Arrival"], reverse=True)	
@@ -221,6 +223,11 @@ class TrainSystem():
                 (dep_time < train_request.times["Departure"])) :
                 print("yeeting here")
                 continue
+            print("Found trains")
+            print(dep)
+            print(dep_time)
+            print(train_request.times["Departure"])
+            print("End found train")
             
             # Arrival related info
             dest, arr_time = \
