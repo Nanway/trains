@@ -53,9 +53,9 @@ def home():
         arrive_id = arrival_station[0][1]
         # Convert time to UTC date time format
         time = datetime.strptime(data["Input Time"], "%H:%M")
-        req_time = datetime.now().replace(hour=time.hour,
+        req_time = datetime.now(tz=syd_tz).replace(hour=time.hour,
             minute=time.minute, second=0, microsecond=0)
-        req_time = syd_tz.localize(req_time)
+        # req_time = syd_tz.localize(req_time)
         req_time = req_time.astimezone(utc)
 
         depOrArr = data["DepOrArr"]

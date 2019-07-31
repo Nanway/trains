@@ -169,11 +169,9 @@
         {% else %}
           <script>
               var today = new Date();
-              var time = today.getHours() + ":" + today.getMinutes();
-              if (time.length < 5) {
-                time = "0" + time;
-              }
-              document.getElementById("time").value = time;
+              var hrs = today.getHours() < 10 ? "0" + today.getHours() : today.getHours();
+              var mins = today.getMinutes() < 10 ? "0" + today.getMinutes():  today.getMinutes();;
+              document.getElementById("time").value = hrs + ":" + mins;
             </script>
         {% endif %}
 
